@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -69,8 +70,31 @@ public class BookController {
 	}
 	
 	// TODO - getAuthorsOfBookByISBN (@Mappings, URI, and method)
+	@GetMapping("/books/{isbn}/authors")
+	public ResponseEntity<Object> getAuthorsOfBookByISBN(@PathVariable String isbn) throws BookNotFoundException {
+	    Book book = bookService.findByISBN(isbn);
+	    Set<Author> authors = book.getAuthors();
+	    
+	    if (authors == null || authors.isEmpty()) {
+	        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+	    }
+
+	    return new ResponseEntity<>(authors, HttpStatus.OK);
+	}
+
 	
 	// TODO - updateBookByISBN (@Mappings, URI, and method)
+	@PutMapping("/book/{isbn}")
+	public ResponseEntity<Object> updateBookByISBN(@PathVariable String isbn, Model model) throws BookNotFoundException {
+		
+		Book book = bookService.findByISBN(isbn);
+		
+			
+		return new ResponseEntity<>(book, HttpStatus.OK);
+		
+	}
+	
+	
 	
 	// TODO - deleteBookByISBN (@Mappings, URI, and method)
 
